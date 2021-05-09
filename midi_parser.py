@@ -32,7 +32,7 @@ class midi_data:
 
     def midi_parse(self):
         self.mid = mido.MidiFile(self.filename, clip=True)
-        num_of_tracks = len(self.mid.tracks)
+        self.num_of_tracks = len(self.mid.tracks)
 
         midi_tracks_dict = [[] for i in range(num_of_tracks)]
         self.midi_tracks = [[] for i in range(num_of_tracks)]
