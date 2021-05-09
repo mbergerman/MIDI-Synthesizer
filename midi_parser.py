@@ -87,3 +87,15 @@ class midi_data:
                 wave2 = np.array(
                     list(np.zeros(n)) + wave + list(np.zeros(len(self.wave_tracks[track]) - (n + len(wave)))))
                 self.wave_tracks[track] = self.wave_tracks[track] + wave2
+
+    def get_num_of_tracks(self):
+        return self.num_of_tracks
+
+    def get_duration(self):
+        return self.duration
+
+    def get_sampleRate(self):
+        return self.sampleRate
+
+    def get_wavetracks(self):
+        return self.wave_tracks
