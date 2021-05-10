@@ -18,15 +18,15 @@ def get_tempo(mid_):
             return msg.tempo
 
 
-class midi_data:
+class MidiData:
 
-    def __init__(self, filename_, sampleRate_=44100):
-        self.filename = filename_
+    def __init__(self, filename, sampleRate = 44100):
+        self.filename = filename
         self.num_of_tracks = 0
         self.midi_tracks = None
         self.mid = None
         self.wave_tracks = None
-        self.sampleRate = sampleRate_
+        self.sampleRate = sampleRate
         self.duration = 0
         self.ticks_per_s = 0
 
