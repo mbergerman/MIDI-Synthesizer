@@ -34,8 +34,8 @@ class midi_data:
         self.mid = mido.MidiFile(self.filename, clip=True)
         self.num_of_tracks = len(self.mid.tracks)
 
-        midi_tracks_dict = [[] for i in range(num_of_tracks)]
-        self.midi_tracks = [[] for i in range(num_of_tracks)]
+        midi_tracks_dict = [[] for i in range(self.num_of_tracks)]
+        self.midi_tracks = [[] for i in range(self.num_of_tracks)]
 
         # Put all note on/off in midinote as dictionary.
         for j, track in enumerate(self.mid.tracks):
@@ -69,24 +69,24 @@ class midi_data:
         self.wave_tracks = [np.zeros(int(self.sampleRate * self.duration)) for i in range(self.num_of_tracks)]
 
     def synthesize_track(self, track, function):
-
         for j, message_data in enumerate(self.midi_tracks[track]):
             if message_data[0] == 'note_on':
                 A = message_data[3] / 100
                 freq = midinote2freq(message_data[1])
                 m = 1
                 tick_start = message_data[2]
-                while track[j + m][0] != 'note off' and track[j + m][1] != message_data[1]:
+                while self.midi_tracks[track][j + m][0] != 'note off' and self.midi_tracks[track][j + m][1] != \
+                        message_data[1]:
                     m += 1
-                tick_end = track[j + m][2]
+                tick_end = self.midi_tracks[track][j + m][2]
                 delta_ticks = tick_end - tick_start
-                wave = []
-                for t in [n / self.sampleRate for n in range(int(self.sampleRate * delta_ticks * self.ticks_per_s))]:
-                    wave.append(function(A, freq, t))
+                delta_t = delta_ticks * self.ticks_per_s
                 n = int(self.sampleRate * tick_start * self.ticks_per_s)
-                wave2 = np.array(
-                    list(np.zeros(n)) + wave + list(np.zeros(len(self.wave_tracks[track]) - (n + len(wave)))))
-                self.wave_tracks[track] = self.wave_tracks[track] + wave2
+                wave = list(np.zeros(n))
+                wave.extend(list(function(A, freq, delta_t, self.sampleRate)))
+                wave.extend(list(np.zeros(len(self.midi_tracks[track]) - len(wave))))
+                wave = np.array(wave)
+                self.midi_tracks[track] = np.add(self.midi_tracks[track], wave)
 
     def get_num_of_tracks(self):
         return self.num_of_tracks
