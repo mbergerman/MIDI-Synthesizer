@@ -40,3 +40,4 @@ def KS_drum(A, f, duration, sampling_rate):
     for i in range(len(x)):
         x[i] = x[i]/maxX
     return x[p:]
+
