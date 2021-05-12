@@ -56,6 +56,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                     self.updateProgress(self.processing, self.processing_progress, self.processing_msg)
 
                     self.midi_data = MidiData(filename)
+                    self.midi_data.midi_parse()
                     N = self.midi_data.get_num_of_tracks()
                     for i in range(N):
                         self.processing_progress = 10+(100-10)*(i+1)/N
