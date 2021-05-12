@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1000</width>
-    <height>500</height>
+    <width>1200</width>
+    <height>600</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -18,9 +18,9 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>30</y>
-      <width>421</width>
-      <height>411</height>
+      <y>80</y>
+      <width>681</width>
+      <height>451</height>
      </rect>
     </property>
    </widget>
@@ -28,9 +28,9 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>450</y>
+      <y>10</y>
       <width>81</width>
-      <height>41</height>
+      <height>31</height>
      </rect>
     </property>
     <property name="font">
@@ -47,9 +47,9 @@
     <property name="geometry">
      <rect>
       <x>110</x>
-      <y>450</y>
+      <y>10</y>
       <width>81</width>
-      <height>41</height>
+      <height>31</height>
      </rect>
     </property>
     <property name="font">
@@ -66,7 +66,7 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>0</y>
+      <y>50</y>
       <width>421</width>
       <height>31</height>
      </rect>
@@ -84,8 +84,8 @@
    <widget class="QLabel" name="propertieslabel">
     <property name="geometry">
      <rect>
-      <x>440</x>
-      <y>0</y>
+      <x>710</x>
+      <y>50</y>
       <width>161</width>
       <height>31</height>
      </rect>
@@ -97,16 +97,16 @@
      </font>
     </property>
     <property name="text">
-     <string>Propiedades</string>
+     <string>Efectos</string>
     </property>
    </widget>
    <widget class="QProgressBar" name="progressBar">
     <property name="geometry">
      <rect>
-      <x>220</x>
-      <y>460</y>
+      <x>210</x>
+      <y>10</y>
       <width>221</width>
-      <height>21</height>
+      <height>31</height>
      </rect>
     </property>
     <property name="value">
@@ -116,22 +116,27 @@
    <widget class="QLabel" name="processlabel">
     <property name="geometry">
      <rect>
-      <x>460</x>
-      <y>460</y>
+      <x>440</x>
+      <y>10</y>
       <width>361</width>
-      <height>21</height>
+      <height>31</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>12</pointsize>
+     </font>
     </property>
     <property name="text">
      <string/>
     </property>
    </widget>
-   <widget class="QSlider" name="horizontalSlider">
+   <widget class="QSlider" name="songSlider">
     <property name="geometry">
      <rect>
-      <x>880</x>
-      <y>460</y>
-      <width>111</width>
+      <x>70</x>
+      <y>555</y>
+      <width>1111</width>
       <height>21</height>
      </rect>
     </property>
@@ -139,33 +144,114 @@
      <number>100</number>
     </property>
     <property name="value">
-     <number>100</number>
+     <number>0</number>
     </property>
     <property name="orientation">
      <enum>Qt::Horizontal</enum>
     </property>
    </widget>
-   <widget class="QListWidget" name="listWidget">
+   <widget class="QPushButton" name="playbtn">
     <property name="geometry">
      <rect>
-      <x>440</x>
-      <y>30</y>
-      <width>551</width>
-      <height>411</height>
+      <x>20</x>
+      <y>550</y>
+      <width>31</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>20</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>▶</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="synthbtn">
+    <property name="geometry">
+     <rect>
+      <x>910</x>
+      <y>10</y>
+      <width>131</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>MS Shell Dlg 2</family>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>Sintetizar</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="specbtn">
+    <property name="geometry">
+     <rect>
+      <x>1060</x>
+      <y>10</y>
+      <width>131</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>MS Shell Dlg 2</family>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>Espectrograma</string>
+    </property>
+   </widget>
+   <widget class="QListWidget" name="effect_list">
+    <property name="geometry">
+     <rect>
+      <x>710</x>
+      <y>80</y>
+      <width>471</width>
+      <height>451</height>
      </rect>
     </property>
    </widget>
-   <widget class="QLabel" name="speakerlabel">
+   <widget class="QPushButton" name="eplusbtn">
     <property name="geometry">
      <rect>
-      <x>840</x>
-      <y>455</y>
-      <width>30</width>
-      <height>30</height>
+      <x>1120</x>
+      <y>50</y>
+      <width>25</width>
+      <height>25</height>
      </rect>
     </property>
+    <property name="font">
+     <font>
+      <family>MS Shell Dlg 2</family>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
     <property name="text">
-     <string/>
+     <string>+</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="eminusbtn">
+    <property name="geometry">
+     <rect>
+      <x>1150</x>
+      <y>50</y>
+      <width>25</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>MS Shell Dlg 2</family>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>-</string>
     </property>
    </widget>
   </widget>
