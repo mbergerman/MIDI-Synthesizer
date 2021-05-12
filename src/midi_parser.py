@@ -84,9 +84,9 @@ class MidiData:
                 n = int(self.sampleRate * tick_start * self.ticks_per_s)
                 wave = list(np.zeros(n))
                 wave.extend(list(function(A, freq, delta_t, self.sampleRate)))
-                wave.extend(list(np.zeros(len(self.midi_tracks[track]) - len(wave))))
+                wave.extend(list(np.zeros(len(self.wave_tracks[track]) - len(wave))))
                 wave = np.array(wave)
-                self.midi_tracks[track] = np.add(self.midi_tracks[track], wave)
+                self.wave_tracks[track] = np.add(self.wave_tracks[track], wave)
 
     def get_num_of_tracks(self):
         return self.num_of_tracks
