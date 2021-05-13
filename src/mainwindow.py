@@ -142,7 +142,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             for i in range(N):
                 data = np.add(data, self.midi_data.wave_tracks[i])
 
-            data /= np.max(np.abs(data))
+            maxVal = np.max(np.abs(data))
+            data /= max(1, maxVal)
             data = data.astype(np.float32).tostring()
             stream.write(data)
             stream.stop_stream()
