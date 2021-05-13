@@ -9,7 +9,7 @@ import pyaudio
 from src.TrackItemWidget import *
 from src.MidiData import *
 from src.synthesizers import *
-
+from src.SampleBasedSynthesis.synthesis import *
 
 class MainWindow(QMainWindow, Ui_MainWindow):
     def __init__(self):
@@ -176,6 +176,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                         self.midi_data.synthesize_track(i, add_synth_violin)
                     elif instrument == "French Horn":
                         self.midi_data.synthesize_track(i, add_synth_horn)
+                    elif instrument == "Trumpet":
+                        self.midi_data.synthesize_track(i, sample_syn)
                     self.processing_progress = 100 * (i + 1) / N  # Porcentaje de progreso
                     self.updateProgress()
                     self.track_list.itemWidget(self.track_list.item(i + 2)).setSynthesized(True)
@@ -196,6 +198,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                     self.midi_data.synthesize_track(i, add_synth_violin)
                 elif instrument == "French Horn":
                     self.midi_data.synthesize_track(i, add_synth_horn)
+                elif instrument == "Trumpet":
+                    self.midi_data.synthesize_track(i, sample_syn)
                 self.processing_progress = 100  # Porcentaje de progreso
                 self.updateProgress()
                 self.readyProgress()

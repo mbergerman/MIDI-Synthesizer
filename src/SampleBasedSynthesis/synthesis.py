@@ -27,8 +27,9 @@ def psola(x, alpha, beta, To, peak):
     return y
 
 
-def sample_syn(f, a, d):
+def sample_syn(a, f, d, s):
     sample = frequency_selection(f)
+    sample = os.path.dirname(os.path.abspath(__file__)) + "\\" + sample
     filename = sample + "_Analysis.txt"
     analysis = open(filename, "r")
 
@@ -54,8 +55,8 @@ def sample_syn(f, a, d):
     y = a * y
 
     t = np.linspace(0, d, len(y))
-    envelope = [adsr_envelope(np.loadtxt(filename + "_A"), np.loadtxt(filename + "_D"), np.loadtxt(filename + "_S"),
-                              np.loadtxt(filename + "_R"), d, ti) for ti in t]
+    envelope = [adsr_envelope(np.loadtxt(sample + "_A"), np.loadtxt(sample + "_D"), np.loadtxt(sample + "_S"),
+                              np.loadtxt(sample + "_R"), d, ti) for ti in t]
     y = np.multiply(envelope, y)
     return y
 
