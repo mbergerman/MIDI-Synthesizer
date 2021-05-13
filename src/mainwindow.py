@@ -30,6 +30,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.synthbtn.clicked.connect(self.synthesizeTracks)
         self.playbtn.clicked.connect(self.playAudio)
 
+    def __del__(self):
+        self.p.terminate()
+
     def hideProgress(self):
         self.processing_visible = False # Barra de progreso
         self.processing_progress = 0    # Porcentaje de progreso
@@ -88,8 +91,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             device_index = device_list.index(device_index)
 
             stream = self.p.open(format=pyaudio.paFloat32,
-                                 channels=2,
-                                 rate=self.midi_data.sampleRate,
+                                 channels=1,
+                                 rate=self.midi_data.get_sampleRate(),
                                  output=True,
                                  output_device_index=device_index
                                  )
@@ -98,7 +101,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             stream.write(data)
             stream.stop_stream()
             stream.close()
-            self.p.terminate()
 
     def synthesizeTracks(self):
         #try:
@@ -125,8 +127,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 self.processing_progress = 100    # Porcentaje de progreso
                 self.updateProgress()
                 self.readyProgress()
-                print(self.track_list.selectedItems()[0])
-                print(self.track_list.itemWidget(self.track_list.selectedItems()[0]))
                 self.track_list.itemWidget(self.track_list.selectedItems()[0]).setSynthesized(True)
         '''except:
             msg = QMessageBox()

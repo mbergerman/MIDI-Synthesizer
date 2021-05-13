@@ -88,6 +88,7 @@ class MidiData:
                 else:
                     wave = np.append(wave, np.zeros(len(self.wave_tracks[track]) - len(wave)))
                 self.wave_tracks[track] = np.add(self.wave_tracks[track], wave)
+        self.wave_tracks[track] /= np.max(np.abs(self.wave_tracks[track]), axis=0)
 
     def get_num_of_tracks(self):
         return self.num_of_tracks
