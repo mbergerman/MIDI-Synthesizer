@@ -9,12 +9,6 @@ class TrackItemWidget(QtWidgets.QWidget):
 
         self.row = QtWidgets.QHBoxLayout()
 
-        self.tracklabel = QtWidgets.QLabel(name)
-        self.tracklabel.setFont(QtGui.QFont("Helvetica", 12))
-        self.row.addWidget(self.tracklabel)
-
-        self.row.addSpacerItem(QtWidgets.QSpacerItem(20, 10, hPolicy=QtWidgets.QSizePolicy.Minimum))
-
         if program:
             self.program = QtWidgets.QComboBox()
             self.program.setFont(QtGui.QFont("Helvetica", 12))
@@ -22,6 +16,12 @@ class TrackItemWidget(QtWidgets.QWidget):
             self.program.addItem("Guitarra")
             self.program.addItem("Percusión")
             self.row.addWidget(self.program)
+
+        self.row.addSpacerItem(QtWidgets.QSpacerItem(20, 10, hPolicy=QtWidgets.QSizePolicy.Minimum))
+
+        self.tracklabel = QtWidgets.QLabel(name + '*')
+        self.tracklabel.setFont(QtGui.QFont("Helvetica", 12))
+        self.row.addWidget(self.tracklabel)
 
         self.row.addSpacerItem(QtWidgets.QSpacerItem(50, 10, hPolicy=QtWidgets.QSizePolicy.Expanding))
 
@@ -39,3 +39,15 @@ class TrackItemWidget(QtWidgets.QWidget):
         self.slider.setValue(100)
         self.row.addWidget(self.slider)
         self.setLayout(self.row)
+
+    def isSynthesized(self):
+        return not self.tracklabel.text().endswith('*')
+
+    def setSynthesized(self, synth):
+        text = self.tracklabel.text()
+        if text.endswith('*'):
+            newtext = text[:-1] if synth else text
+            self.tracklabel.setText(newtext)
+        else:
+            newtext = text if synth else text + '*'
+            self.tracklabel.setText(newtext)

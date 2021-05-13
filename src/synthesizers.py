@@ -1,7 +1,6 @@
-import numpy as np
-from scipy import signal, special, integrate, fft
+from scipy import signal
 import random as rand
-import synth_tools as st
+from src import synth_tools as st
 
 
 def add_guitar_body(xin, body_name):
@@ -11,16 +10,14 @@ def add_guitar_body(xin, body_name):
 
 def KS_string(A, f, duration, sampling_rate):
     p = int((sampling_rate/f)-0.5)
-    x = []
-    for n in range(p):
-        x.append(rand.gauss(0, 1)*A)
+    x = [rand.gauss(0, 1)*A for _ in range(p)]
 
-    for n2 in range(p+1, int(duration*sampling_rate)):
-        x.append(0.5*(x[n2-p]+x[n2-p-1]))
+    for n2 in range(p + 1, int(duration * sampling_rate)):
+        x.append(0.5 * (x[n2 - p] + x[n2 - p - 1]))
 
     maxX = max(x)
-    for i in range(len(x)):
-        x[i] = x[i]/maxX
+    x = [x_i / maxX for x_i in x]
+
     return add_guitar_body(x[p:], "collins_IR")
 
 def KS_drum(A, f, duration, sampling_rate):

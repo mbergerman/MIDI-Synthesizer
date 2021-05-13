@@ -1,7 +1,7 @@
 import numpy as np
 from scipy import signal, special, integrate, fft
 import wave as WAV
-
+import os
 
 def upload_impulse_response(origin_filename, impulse_name):
     # Read file to get buffer
@@ -16,7 +16,8 @@ def upload_impulse_response(origin_filename, impulse_name):
     # Normalise float32 array so that values are between -1.0 and +1.0
     max_int16 = 2 ** 15
     audio_normalised = audio_as_np_float32 / max_int16
-    impulse_name = "impulse_responses\\" + impulse_name + ".txt"
+    current_path = os.path.dirname(os.path.abspath(__file__))
+    impulse_name = os.path.join(current_path, "resources", "impulse_responses", str(impulse_name) + ".txt")
     f = open(impulse_name, "w+")
     for val in audio_normalised:
         f.write(str(val) + "\n")
@@ -24,7 +25,8 @@ def upload_impulse_response(origin_filename, impulse_name):
 
 
 def open_impulse_response(impulse_name):
-    impulse_name = "impulse_responses\\" + impulse_name + ".txt"
+    current_path = os.path.dirname(os.path.abspath(__file__))
+    impulse_name = os.path.join(current_path, "resources", "impulse_responses", str(impulse_name) + ".txt")
     f = open(impulse_name, "r")
     data = f.readlines()
     f.close()

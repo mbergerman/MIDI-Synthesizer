@@ -19,7 +19,6 @@ def get_tempo(mid_):
 
 
 class MidiData:
-
     def __init__(self, filename, sampleRate = 44100):
         self.filename = filename
         self.num_of_tracks = 0
@@ -82,10 +81,12 @@ class MidiData:
                 delta_ticks = tick_end - tick_start
                 delta_t = delta_ticks * self.ticks_per_s
                 n = int(self.sampleRate * tick_start * self.ticks_per_s)
-                wave = list(np.zeros(n))
-                wave.extend(list(function(A, freq, delta_t, self.sampleRate)))
-                wave.extend(list(np.zeros(len(self.wave_tracks[track]) - len(wave))))
-                wave = np.array(wave)
+                wave = np.zeros(n)
+                wave = np.append(wave, function(A, freq, delta_t, self.sampleRate))
+                if len(self.wave_tracks[track]) < len(wave):
+                    wave = wave[:len(self.wave_tracks[track])]
+                else:
+                    wave = np.append(wave, np.zeros(len(self.wave_tracks[track]) - len(wave)))
                 self.wave_tracks[track] = np.add(self.wave_tracks[track], wave)
 
     def get_num_of_tracks(self):
