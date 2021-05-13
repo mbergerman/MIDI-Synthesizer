@@ -1,2 +1,4 @@
-PyQt5
-mido
+PyQt5~=5.15.4
+mido~=1.2.9
+numpy~=1.20.2
+scipy~=1.6.3
