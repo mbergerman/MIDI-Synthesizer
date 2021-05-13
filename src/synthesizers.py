@@ -52,7 +52,7 @@ def add_synth_instrument(harmonic_a, f0, harmonic_freq, duration, sample_rate, A
     for i in range(N):
         sine_out = sine_out + list(sine_o)
     t2 = np.linspace(0, len(sine_out)/sample_rate, len(sine_out))
-    env = np.array([adsr_envelope(A, D, S, R, len(sine_out)/sample_rate, ti) for ti in t2])
+    env = adsr_envelope(A, D, S, R, len(sine_out)/sample_rate, t2)
     return np.multiply(sine_out, env)
 
 

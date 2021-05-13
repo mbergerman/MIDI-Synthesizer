@@ -55,8 +55,8 @@ def sample_syn(a, f, d, s):
     y = a * y
 
     t = np.linspace(0, d, len(y))
-    envelope = [adsr_envelope(np.loadtxt(sample + "_A"), np.loadtxt(sample + "_D"), np.loadtxt(sample + "_S"),
-                              np.loadtxt(sample + "_R"), d, ti) for ti in t]
+    envelope = adsr_envelope(np.loadtxt(sample + "_A"), np.loadtxt(sample + "_D"), np.loadtxt(sample + "_S"),
+                              np.loadtxt(sample + "_R"), d, t)
     y = np.multiply(envelope, y)
     return y
 
