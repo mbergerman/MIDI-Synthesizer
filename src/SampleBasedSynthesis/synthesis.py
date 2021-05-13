@@ -5,20 +5,20 @@ import matplotlib.pyplot as plt
 import wave as WAV
 from src.synth_tools import *
 
-def psola(x, alpha, beta, To, peak):
 
+def psola(x, alpha, beta, To, peak):
     segments = int(np.floor(len(x) / To))
     Lout = alpha * len(x)
     y = np.zeros(int(np.floor(Lout)))
 
     tk = To + peak
     while tk < Lout:
-        k = abs((alpha * (peak+To) - tk))
+        k = abs((alpha * (peak + To) - tk))
         t = To + peak
         for j in range(2, segments - 1):
-            if abs((alpha * ((To*j) + peak)) - tk) < k:
+            if abs((alpha * ((To * j) + peak)) - tk) < k:
                 t = (To * j) + peak
-                k = (alpha * ((To *j)+peak)) - tk
+                k = (alpha * ((To * j) + peak)) - tk
         t = int(np.floor(t))
         gr = np.multiply(x[t - To:t + To + 1], np.hanning(2 * To + 1))
         if To + tk < Lout:
@@ -27,7 +27,7 @@ def psola(x, alpha, beta, To, peak):
     return y
 
 
-def sample_syn(instrument, f, a, d):
+def sample_syn(f, a, d):
     sample = frequency_selection(f)
     filename = sample + "_Analysis.txt"
     analysis = open(filename, "r")
@@ -50,13 +50,15 @@ def sample_syn(instrument, f, a, d):
     beta = f / fo
 
     y = psola(x, alpha, beta, To, peak)
-    y = y/max(y)
-    y = a*y
+    y = y / max(y)
+    y = a * y
 
     t = np.linspace(0, d, len(y))
-    envelope = [adsr_envelope(np.loadtxt(filename+"_A"), np.loadtxt(filename+"_D"), np.loadtxt(filename+"_S"), np.loadtxt(filename+"_R"),d,ti) for ti in t]
-    y = np.multiply(envelope,y)
+    envelope = [adsr_envelope(np.loadtxt(filename + "_A"), np.loadtxt(filename + "_D"), np.loadtxt(filename + "_S"),
+                              np.loadtxt(filename + "_R"), d, ti) for ti in t]
+    y = np.multiply(envelope, y)
     return y
+
 
 def frequency_selection(f):
     if f > 300:
@@ -65,5 +67,5 @@ def frequency_selection(f):
         sample = "Trumpet_C3"
     else:
         sample = "Trumpet_C5"
-    return sample
 
+    return sample
