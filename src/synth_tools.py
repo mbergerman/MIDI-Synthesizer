@@ -208,3 +208,20 @@ def get_adsr(filename, sampling_rate):
     R = [0, Rn / N]
 
     return A, D, S, R
+
+
+def adsr_envelope(A, D, S, R, duration, t):
+    At = A[1] * duration
+    Dt = D[1] * duration
+    St = S[1] * duration
+    Rt = R[1] * duration
+    out = 0
+    if t <= At:
+        out = t / At
+    elif At < t <= Dt:
+        out = ((D[0] - 1)/(Dt - At)) * (t - At) + 1
+    elif Dt < t <= St:
+        out = ((S[0] - D[0])/(St - Dt)) * (t - Dt) + D[0]
+    else:
+        out = S[0]*np.exp(-(t-St)/(abs(Rt-St)))
+    return out
