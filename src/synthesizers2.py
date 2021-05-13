@@ -67,6 +67,7 @@ def sample_syn(ins, f, a, d, sampling_rate):
     # Normalise float32 array so that values are between -1.0 and +1.0
     max_int16 = 2 ** 15
     audio_normalised = audio_as_np_float32 / max_int16
+    #está harcodeado
     audio_normalised = audio_normalised[25000:30000]
     plt.plot(audio_normalised)
     audio_duration = len(audio_normalised) / sampling_rate
