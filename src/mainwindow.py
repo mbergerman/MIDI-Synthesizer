@@ -1,5 +1,6 @@
 # PyQt5 modules
-from PyQt5.QtWidgets import QMainWindow, QFileDialog, QApplication, QWidget, QPushButton, QAction, QLineEdit, QMessageBox
+from PyQt5.QtWidgets import QMainWindow, QFileDialog, QApplication, QWidget, QPushButton, QAction, QLineEdit, \
+    QMessageBox
 # Project modules
 from src.ui.mainwindow import Ui_MainWindow
 
@@ -8,6 +9,7 @@ import pyaudio
 from src.TrackItemWidget import *
 from src.MidiData import *
 from src.synthesizers import *
+
 
 class MainWindow(QMainWindow, Ui_MainWindow):
     def __init__(self):
@@ -34,9 +36,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.p.terminate()
 
     def hideProgress(self):
-        self.processing_visible = False # Barra de progreso
-        self.processing_progress = 0    # Porcentaje de progreso
-        self.processing_message = ""    # Mensaje de qué se está procesando
+        self.processing_visible = False  # Barra de progreso
+        self.processing_progress = 0  # Porcentaje de progreso
+        self.processing_message = ""  # Mensaje de qué se está procesando
         self.updateProgress()
 
     def readyProgress(self):
@@ -52,6 +54,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.progressBar.repaint()
         self.processlabel.repaint()
 
+    def stopAudio(self):
+        if not self.playing:
+            self.playbtn.setText("▮▮")
+            self.playing = True
+
     def playAudio(self):
         if not self.playing:
             self.playbtn.setText("▮▮")
@@ -65,18 +72,25 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             if len(selected_indexes) > 0:
                 selected_index = selected_indexes[0]
 
-                if selected_index.row() == 0:
-                    pass
-                else:
-                    i = selected_index.row() - 2
-                    if self.midi_data.wave_tracks:
-                        if not self.track_list.itemWidget(self.track_list.selectedItems()[0]).isSynthesized():
-                            msg = QMessageBox()
-                            msg.setIcon(QMessageBox.Warning)
-                            msg.setWindowTitle("Advertencia!")
-                            msg.setText("No se realizó una sintetización!")
-                            msg.exec_()
-                        self.playTrack(i)
+            if selected_index.row() == 0:
+                '''if self.midi_data.wave_tracks:
+                    if not self.track_list.itemWidget(self.track_list.selectedItems()[0]).isSynthesized():
+                        msg = QMessageBox()
+                        msg.setIcon(QMessageBox.Warning)
+                        msg.setWindowTitle("Advertencia!")
+                        msg.setText("No se realizó una sintetización!")
+                        msg.exec_()'''
+                self.playSong()
+            else:
+                i = selected_index.row() - 2
+                if self.midi_data.wave_tracks:
+                    if not self.track_list.itemWidget(self.track_list.selectedItems()[0]).isSynthesized():
+                        msg = QMessageBox()
+                        msg.setIcon(QMessageBox.Warning)
+                        msg.setWindowTitle("Advertencia!")
+                        msg.setText("No se realizó una sintetización!")
+                        msg.exec_()
+                    self.playTrack(i)
 
     def playTrack(self, track):
         if self.playing:
@@ -85,9 +99,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             device_list = []
             for i in range(self.p.get_device_count()):
                 dev = self.p.get_device_info_by_index(i)
-                device_list.append( f"{i}. {dev['name']}, {dev['maxOutputChannels']}")
+                device_list.append(f"{i}. {dev['name']}, {dev['maxOutputChannels']}")
 
-            device_index, _ = QtWidgets.QInputDialog.getItem(self, "Seleccionar un dispositivo", "Dispositivo:", device_list)
+            device_index, _ = QtWidgets.QInputDialog.getItem(self, "Seleccionar un dispositivo", "Dispositivo:",
+                                                             device_list)
             device_index = device_list.index(device_index)
 
             stream = self.p.open(format=pyaudio.paFloat32,
@@ -102,21 +117,52 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             stream.stop_stream()
             stream.close()
 
+    def playSong(self):
+        if self.playing:
+            # Open stream with correct settings
+
+            device_list = []
+            for i in range(self.p.get_device_count()):
+                dev = self.p.get_device_info_by_index(i)
+                device_list.append(f"{i}. {dev['name']}, {dev['maxOutputChannels']}")
+
+            device_index, _ = QtWidgets.QInputDialog.getItem(self, "Seleccionar un dispositivo", "Dispositivo:",
+                                                             device_list)
+            device_index = device_list.index(device_index)
+
+            stream = self.p.open(format=pyaudio.paFloat32,
+                                 channels=1,
+                                 rate=self.midi_data.get_sampleRate(),
+                                 output=True,
+                                 output_device_index=device_index
+                                 )
+
+            data = np.zeros(len(self.midi_data.wave_tracks[0]))
+            N = self.midi_data.get_num_of_tracks()
+            for i in range(N):
+                data = np.add(data, self.midi_data.wave_tracks[i])
+
+            data /= np.max(np.abs(data))
+            data = data.astype(np.float32).tostring()
+            stream.write(data)
+            stream.stop_stream()
+            stream.close()
+
     def synthesizeTracks(self):
-        #try:
+        # try:
         selected_indexes = self.track_list.selectedIndexes()
         if len(selected_indexes) > 0:
             selected_index = selected_indexes[0]
 
             self.processing_visible = True  # Barra de progreso
-            self.processing_progress = 0    # Porcentaje de progreso
+            self.processing_progress = 0  # Porcentaje de progreso
             self.processing_message = "Sintetizando Canción..." if selected_index == 0 else "Sintetizando Track..."
             self.updateProgress()
 
             if selected_index.row() == 0:
                 N = self.midi_data.get_num_of_tracks()
                 for i in range(N):
-                    instrument = self.track_list.itemWidget(self.track_list.item(i+2)).getProgram()
+                    instrument = self.track_list.itemWidget(self.track_list.item(i + 2)).getProgram()
                     if instrument == "Guitar":
                         self.midi_data.synthesize_track(i, KS_string)
                     elif instrument == "Drums":
@@ -129,14 +175,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                         self.midi_data.synthesize_track(i, add_synth_violin)
                     elif instrument == "French Horn":
                         self.midi_data.synthesize_track(i, add_synth_horn)
-                    elif instrument == "Soprano Sax":
-                        self.midi_data.synthesize_track(i, add_synth_sax)
-                    self.processing_progress = 100*(i+1)/N    # Porcentaje de progreso
+                    self.processing_progress = 100 * (i + 1) / N  # Porcentaje de progreso
                     self.updateProgress()
-                    self.track_list.itemWidget(self.track_list.item(i+2)).setSynthesized(True)
+                    self.track_list.itemWidget(self.track_list.item(i + 2)).setSynthesized(True)
                 self.readyProgress()
+                self.track_list.itemWidget(self.track_list.item(0)).setSynthesized(True)
             else:
-                i = selected_index.row()-2
+                i = selected_index.row() - 2
                 instrument = self.track_list.itemWidget(self.track_list.item(i + 2)).getProgram()
                 if instrument == "Guitar":
                     self.midi_data.synthesize_track(i, KS_string)
@@ -150,9 +195,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                     self.midi_data.synthesize_track(i, add_synth_violin)
                 elif instrument == "French Horn":
                     self.midi_data.synthesize_track(i, add_synth_horn)
-                elif instrument == "Soprano Sax":
-                    self.midi_data.synthesize_track(i, add_synth_sax)
-                self.processing_progress = 100    # Porcentaje de progreso
+                self.processing_progress = 100  # Porcentaje de progreso
                 self.updateProgress()
                 self.readyProgress()
                 self.track_list.itemWidget(self.track_list.selectedItems()[0]).setSynthesized(True)
@@ -203,7 +246,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
                     item = QtWidgets.QListWidgetItem(self.track_list)
                     self.track_list.addItem(item)
-                    row = TrackItemWidget(f'Canción', program = False)
+                    row = TrackItemWidget(f'Canción', program=False)
                     item.setSizeHint(row.minimumSizeHint())
                     self.track_list.setItemWidget(item, row)
 
@@ -217,7 +260,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                     self.track_list.setItemWidget(item, hline)
 
                     for i in range(N):
-                        self.processing_progress = 10+(100-10)*(i+1)/N
+                        self.processing_progress = 10 + (100 - 10) * (i + 1) / N
                         self.updateProgress()
 
                         item = QtWidgets.QListWidgetItem(self.track_list)

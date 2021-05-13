@@ -18,7 +18,6 @@ class TrackItemWidget(QtWidgets.QWidget):
             self.program.addItem("Violin")
             self.program.addItem("Bass")
             self.program.addItem("French Horn")
-            self.program.addItem("Soprano Sax")
             self.row.addWidget(self.program)
 
         self.row.addSpacerItem(QtWidgets.QSpacerItem(20, 10, hPolicy=QtWidgets.QSizePolicy.Minimum))

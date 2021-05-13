@@ -108,9 +108,5 @@ def add_synth_horn(a, f, duration, sampling_rate):
     return add_synthesis("french-horn", a, f, duration, sampling_rate)
 
 
-def add_synth_sax(a, f, duration, sampling_rate):
-    return add_synthesis("sax", a, f, duration, sampling_rate)
-
-
 def add_synth_guitar(a, f, duration, sampling_rate):
     return add_synthesis("guitar", a, f, duration, sampling_rate)
