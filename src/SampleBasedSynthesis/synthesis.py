@@ -3,7 +3,7 @@ import scipy.signal as signal
 from scipy.fft import fft, fftfreq
 import matplotlib.pyplot as plt
 import wave as WAV
-
+from src.synth_tools import *
 
 def psola(x, alpha, beta, To, peak):
 
@@ -48,12 +48,14 @@ def sample_syn(instrument, f, a, d):
     alpha = d / audio_duration
 
     beta = f / fo
-    print(fo)
 
     y = psola(x, alpha, beta, To, peak)
     y = y/max(y)
     y = a*y
 
+    t = np.linspace(0, d, len(y))
+    envelope = [adsr_envelope(np.loadtxt(filename+"_A"), np.loadtxt(filename+"_D"), np.loadtxt(filename+"_S"), np.loadtxt(filename+"_R"),d,ti) for ti in t]
+    y = np.multiply(envelope,y)
     return y
 
 def frequency_selection(f):
