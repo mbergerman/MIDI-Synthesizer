@@ -11,14 +11,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         super(MainWindow, self).__init__()
         self.setupUi(self)
         self.statusbar.hide()
-        self.setFixedSize(1000, 500)
+        self.setFixedSize(1200, 600)
 
         self.midi_data = None
-
-        imagepath = os.path.join(os.path.dirname(os.path.abspath(__file__)), "resources", "speaker.png")
-        speakerimg = QtGui.QImage(imagepath)
-        self.speakerlabel.setPixmap(QtGui.QPixmap.fromImage(speakerimg).scaled(35, 35, Qt.KeepAspectRatio, transformMode=Qt.SmoothTransformation))
-        self.speakerlabel.adjustSize()
 
         self.processing = False         # Barra de progreso
         self.processing_progress = 0    # Porcentaje de progreso
@@ -58,6 +53,22 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                     self.midi_data = MidiData(filename)
                     self.midi_data.midi_parse()
                     N = self.midi_data.get_num_of_tracks()
+
+                    item = QtWidgets.QListWidgetItem(self.track_list)
+                    self.track_list.addItem(item)
+                    row = TrackItemWidget(f'Canción', program = False)
+                    item.setSizeHint(row.minimumSizeHint())
+                    self.track_list.setItemWidget(item, row)
+
+                    item = QtWidgets.QListWidgetItem(self.track_list)
+                    item.setFlags(item.flags() & ~Qt.ItemIsEnabled)
+                    self.track_list.addItem(item)
+                    hline = QtWidgets.QFrame()
+                    hline.setFrameShape(QtWidgets.QFrame.HLine)
+                    hline.setFrameShadow(QtWidgets.QFrame.Sunken)
+                    item.setSizeHint(hline.minimumSizeHint())
+                    self.track_list.setItemWidget(item, hline)
+
                     for i in range(N):
                         self.processing_progress = 10+(100-10)*(i+1)/N
                         self.updateProgress(self.processing, self.processing_progress, self.processing_msg)
