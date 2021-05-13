@@ -12,9 +12,13 @@ class TrackItemWidget(QtWidgets.QWidget):
         if program:
             self.program = QtWidgets.QComboBox()
             self.program.setFont(QtGui.QFont("Helvetica", 12))
-            self.program.addItem("Piano")
-            self.program.addItem("Guitarra")
-            self.program.addItem("Percusión")
+            self.program.addItem("Guitar")
+            self.program.addItem("Drums")
+            self.program.addItem("E-Piano")
+            self.program.addItem("Violin")
+            self.program.addItem("Bass")
+            self.program.addItem("French Horn")
+            self.program.addItem("Soprano Sax")
             self.row.addWidget(self.program)
 
         self.row.addSpacerItem(QtWidgets.QSpacerItem(20, 10, hPolicy=QtWidgets.QSizePolicy.Minimum))
@@ -51,3 +55,6 @@ class TrackItemWidget(QtWidgets.QWidget):
         else:
             newtext = text if synth else text + '*'
             self.tracklabel.setText(newtext)
+
+    def getProgram(self):
+        return str(self.program.currentText())

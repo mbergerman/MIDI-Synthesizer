@@ -68,6 +68,7 @@ class MidiData:
         self.wave_tracks = [np.zeros(int(self.sampleRate * self.duration)) for i in range(self.num_of_tracks)]
 
     def synthesize_track(self, track, function):
+        self.wave_tracks[track] = np.zeros(len(self.wave_tracks[track]))
         for j, message_data in enumerate(self.midi_tracks[track]):
             if message_data[0] == 'note_on':
                 A = message_data[3] / 100

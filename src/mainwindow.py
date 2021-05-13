@@ -116,14 +116,42 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             if selected_index.row() == 0:
                 N = self.midi_data.get_num_of_tracks()
                 for i in range(N):
-                    self.midi_data.synthesize_track(i, KS_string)
+                    instrument = self.track_list.itemWidget(self.track_list.item(i+2)).getProgram()
+                    if instrument == "Guitar":
+                        self.midi_data.synthesize_track(i, KS_string)
+                    elif instrument == "Drums":
+                        self.midi_data.synthesize_track(i, KS_drum)
+                    elif instrument == "E-Piano":
+                        self.midi_data.synthesize_track(i, add_synth_epiano)
+                    elif instrument == "Bass":
+                        self.midi_data.synthesize_track(i, add_synth_bass)
+                    elif instrument == "Violin":
+                        self.midi_data.synthesize_track(i, add_synth_violin)
+                    elif instrument == "French Horn":
+                        self.midi_data.synthesize_track(i, add_synth_horn)
+                    elif instrument == "Soprano Sax":
+                        self.midi_data.synthesize_track(i, add_synth_sax)
                     self.processing_progress = 100*(i+1)/N    # Porcentaje de progreso
                     self.updateProgress()
                     self.track_list.itemWidget(self.track_list.item(i+2)).setSynthesized(True)
                 self.readyProgress()
             else:
                 i = selected_index.row()-2
-                self.midi_data.synthesize_track(i, KS_string)
+                instrument = self.track_list.itemWidget(self.track_list.item(i + 2)).getProgram()
+                if instrument == "Guitar":
+                    self.midi_data.synthesize_track(i, KS_string)
+                elif instrument == "Drums":
+                    self.midi_data.synthesize_track(i, KS_drum)
+                elif instrument == "E-Piano":
+                    self.midi_data.synthesize_track(i, add_synth_epiano)
+                elif instrument == "Bass":
+                    self.midi_data.synthesize_track(i, add_synth_bass)
+                elif instrument == "Violin":
+                    self.midi_data.synthesize_track(i, add_synth_violin)
+                elif instrument == "French Horn":
+                    self.midi_data.synthesize_track(i, add_synth_horn)
+                elif instrument == "Soprano Sax":
+                    self.midi_data.synthesize_track(i, add_synth_sax)
                 self.processing_progress = 100    # Porcentaje de progreso
                 self.updateProgress()
                 self.readyProgress()

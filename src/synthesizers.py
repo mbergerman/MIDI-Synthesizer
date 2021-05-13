@@ -40,7 +40,6 @@ def KS_drum(A, f, duration, sampling_rate):
     return x[p:]
 
 
-
 def add_synth_instrument(harmonic_a, f0, harmonic_freq, duration, sample_rate, A, D, S, R):
     t = np.linspace(0, 1 / f0, int(sample_rate / f0))
     duration = duration + (1 - R[1])*duration

@@ -41,8 +41,9 @@ def save_additive_instrument(origin_filename, file_sampling_rate, instrument_nam
     A, D, S, R = get_adsr(origin_filename, file_sampling_rate)
     amp, freq = get_partial(D[1], S[1], origin_filename, file_sampling_rate)
 
-    ADSR_filename = "add_synth_instruments\\" + instrument_name + "ADSR.txt"
-    partials_filename = "add_synth_instruments\\" + instrument_name + "partials.txt"
+    current_path = os.path.dirname(os.path.abspath(__file__))
+    ADSR_filename = os.path.join(current_path, "resources", "add_synth_instruments", str(instrument_name) + "ADSR.txt")
+    partials_filename = os.path.join(current_path, "resources", "add_synth_instruments", str(instrument_name) + "partials.txt")
 
     f = open(ADSR_filename, "w+")
     f.write(str(A[0]) + "," + str(A[1]) + "\n")
@@ -58,8 +59,10 @@ def save_additive_instrument(origin_filename, file_sampling_rate, instrument_nam
 
 
 def open_additive_instrument(instrument_name):
-    ADSR_filename = "add_synth_instruments\\" + instrument_name + "ADSR.txt"
-    partials_filename = "add_synth_instruments\\" + instrument_name + "partials.txt"
+    current_path = os.path.dirname(os.path.abspath(__file__))
+    ADSR_filename = os.path.join(current_path, "resources", "add_synth_instruments", str(instrument_name) + "ADSR.txt")
+    partials_filename = os.path.join(current_path, "resources", "add_synth_instruments", str(instrument_name) + "partials.txt")
+
     f = open(ADSR_filename, "r")
     data = f.readlines()
     f.close()
