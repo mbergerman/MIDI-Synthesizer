@@ -4,15 +4,15 @@ import numpy as np
 # Nose si se interfasea bien con lo demas. Sino veo de hacerlo estilo funcion como el reverb
 
 class Vibrato:
-    def __init__(self,maxPitchShift,fs,fLFO = 2):
+    def __init__(self,maxPitchShift,fs,fLFO = 2,buffer_length= 1024):
         #Parametros
         # maxPitchShift = Maxima variacion en frecuencia de la salida respecto a la frec de entrada (cociente directo)
         #fs = self explanatory
         #fLFO varia delay time, no suele ser mas de 20Hz
-
+        self.bufferLength = buffer_length
         self.inBuffer = np.array([])
         self.outBuffer = np.array([])
-
+        self.prevOutput = np.zeros(buffer_length)
         self.fs = fs
         self.fLFO = fLFO
         self.W = (maxPitchShift-1)/(2*np.pi*self.fLFO)     # Variacion maxima el delay (En segundos)
@@ -24,20 +24,21 @@ class Vibrato:
 
 
     def output(self,inputBuffer):
-        self.inBuffer = inputBuffer
-        LEN = self.inBuffer.size
-        self.outBuffer = np.zeros(LEN)      #Padeo con 0 (Condiciones iniciales)
-        PAD = round((self.W + self.avgDelay)*self.fs)
-        for w in range(0,PAD-1):
-            self.inBuffer = np.insert(self.inBuffer,0,0)
+        self.inBuffer = np.concatenate(self.prevOutput,inputBuffer)
+        #LEN = self.inBuffer.size
+        self.outBuffer = np.zeros(self.bufferLength)      #Inicializo el array de salida en 0
+        # PAD = round((self.W + self.avgDelay)*self.fs)
+        # for w in range(0,PAD-1):
+        #     self.inBuffer = np.insert(self.inBuffer,0,0)
 
-        for n in range(PAD-1, self.inBuffer.size):
+        for n in range(self.bufferLength, self.inBuffer.size):
             self.set_delay(n)
             i = int(np.floor(n-self.currDelay))         #Calculo de valores enteros de indice de muestra a tomar
             j = int(np.ceil(n-self.currDelay))
             interSample = ((j-(n-self.currDelay))*self.inBuffer[i] )+ (((n-self.currDelay) - i)*self.inBuffer[j]) #Interpolador Libro
 
-            self.outBuffer[n-(PAD-1)] = interSample
+            self.outBuffer[n-(self.bufferLength)] = interSample
+        self.prevOutput = self.outBuffer
         return self.outBuffer
 
 class Flanger:
