@@ -108,7 +108,10 @@ class MidiData:
         self.wave_tracks[track] /= max(1, maxVal)
 
     def get_num_of_tracks(self):
-        return self.num_of_tracks
+        if self.num_of_tracks:
+            return self.num_of_tracks
+        else:
+            return 0
 
     def get_duration(self):
         return self.duration
