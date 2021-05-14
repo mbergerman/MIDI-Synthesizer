@@ -19,7 +19,6 @@ def get_tempo(mid_):
 
 
 class MidiData:
-
     def __init__(self, filename, sampleRate = 44100):
         self.filename = filename
         self.num_of_tracks = 0
@@ -34,6 +33,19 @@ class MidiData:
         self.mid = mido.MidiFile(self.filename, clip=True)
         self.num_of_tracks = len(self.mid.tracks)
 
+        # Delete duplicates
+        message_numbers = []
+        duplicates = []
+
+        for track in self.mid.tracks:
+            if len(track) in message_numbers:
+                duplicates.append(track)
+            else:
+                message_numbers.append(len(track))
+        for track in duplicates:
+            self.mid.tracks.remove(track)
+
+        # Start Parse
         midi_tracks_dict = [[] for i in range(self.num_of_tracks)]
         self.midi_tracks = [[] for i in range(self.num_of_tracks)]
 
@@ -62,6 +74,8 @@ class MidiData:
                     message_data.append(i['channel'])
                     self.midi_tracks[j].append(message_data)
 
+        self.midi_tracks =  [x for x in self.midi_tracks if x != []]
+        self.num_of_tracks = len(self.midi_tracks)
         self.duration = self.mid.length  # Duration in seconds
         tempo = get_tempo(self.mid)  # Microseconds per beat
         tempo_s = tempo / 1e6  # Seconds per beat
@@ -69,6 +83,7 @@ class MidiData:
         self.wave_tracks = [np.zeros(int(self.sampleRate * self.duration)) for i in range(self.num_of_tracks)]
 
     def synthesize_track(self, track, function):
+        self.wave_tracks[track] = np.zeros(len(self.wave_tracks[track]))
         for j, message_data in enumerate(self.midi_tracks[track]):
             if message_data[0] == 'note_on':
                 A = message_data[3] / 100
@@ -82,11 +97,15 @@ class MidiData:
                 delta_ticks = tick_end - tick_start
                 delta_t = delta_ticks * self.ticks_per_s
                 n = int(self.sampleRate * tick_start * self.ticks_per_s)
-                wave = list(np.zeros(n))
-                wave.extend(list(function(A, freq, delta_t, self.sampleRate)))
-                wave.extend(list(np.zeros(len(self.midi_tracks[track]) - len(wave))))
-                wave = np.array(wave)
-                self.midi_tracks[track] = np.add(self.midi_tracks[track], wave)
+                wave = np.zeros(n)
+                wave = np.append(wave, function(A, freq, delta_t, self.sampleRate))
+                if len(self.wave_tracks[track]) < len(wave):
+                    wave = wave[:len(self.wave_tracks[track])]
+                else:
+                    wave = np.append(wave, np.zeros(len(self.wave_tracks[track]) - len(wave)))
+                self.wave_tracks[track] = np.add(self.wave_tracks[track], wave)
+        maxVal = np.max(np.abs(self.wave_tracks[track]), axis=0)
+        self.wave_tracks[track] /= max(1, maxVal)
 
     def get_num_of_tracks(self):
         return self.num_of_tracks
