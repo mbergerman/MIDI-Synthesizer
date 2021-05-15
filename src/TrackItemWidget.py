@@ -4,8 +4,10 @@ from PyQt5.QtCore import Qt
 import os
 
 class TrackItemWidget(QtWidgets.QWidget):
-    def __init__(self, name, parent=None, program = True):
+    def __init__(self, name, parent=None, program = True, index = 0):
         super(TrackItemWidget, self).__init__(parent)
+
+        self.index = index
 
         self.row = QtWidgets.QHBoxLayout()
 

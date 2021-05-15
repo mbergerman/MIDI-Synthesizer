@@ -13,3 +13,11 @@ class DataStream:
         return_data = self.data[self.index : end]
         self.index = end
         return return_data
+
+    def isEmpty(self):
+        if self.data is None:
+            return True
+        elif len(self.data) == 0:
+            return True
+        else:
+            return False
